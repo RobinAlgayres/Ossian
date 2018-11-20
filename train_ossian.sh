@@ -42,8 +42,6 @@ if [ ! -d "corpus" ]; then
 	find "corpus/" -type f -not -name $SPEAKER* -not -name "text.txt" -delete
 fi
 
-exit
-
 # getting merlin and htk
 if [ ! -d "tools/merlin" ]; then
 	./scripts/setup_tools.sh $HTK_USERNAME $HTK_PASSWORD
