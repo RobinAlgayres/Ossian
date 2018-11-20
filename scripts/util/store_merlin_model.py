@@ -69,28 +69,40 @@ def store_network(nnets_file_name, lab_dim, outdir):
     names = [p.name for p in dnn_model.params]
     param_vals = [p.get_value(borrow=True) for p in dnn_model.params]
     shapes = [numpy.shape(p) for p in param_vals]
+    print(names,shapes)
     print cfg.hidden_layer_size    
     layer_types = cfg.hidden_layer_type
     if cfg.output_activation == 'linear':
         layer_types.append('LINEAR')
     else:
         sys.exit('unsupported output activation')
-    assert len(param_vals) == len(layer_types) * 2 ##  W and b for each layer
+  # assert len(param_vals) == len(layer_types) * 2 ##  W and b for each layer
     print names
-    
-    
     p_ix = 0
+    lstm_parts=['W_xi', 'W_hi', 'w_ci', 'W_xf', 'W_hf', 'w_cf', 'W_xo', 'W_ho', 'w_co', 'W_xc', 'W_hc', 'b_i', 'b_f', 'b_o', 'b_c']
     for (l_ix, layer_type) in enumerate(layer_types):
+	
         layer_name = 'LAYER_' + str(l_ix+1).zfill(3) + '_' + layer_type + '_'
-        #print layer_name
-        for part in ['W','b']:
-            assert names[p_ix] == part
-            fname = layer_name + part
-            print fname
-            #numpy.savetxt(os.path.join(outdir, fname + '.txt'), param_vals[p_ix])
-            numpy.save(os.path.join(outdir, fname + '.npy'), param_vals[p_ix])
+  	print(layer_name)      
+	if layer_type == 'LSTM':
+		for part in lstm_parts:
+            		assert names[p_ix] == part
+            		fname = layer_name + part
+            		print fname
+            		#numpy.savetxt(os.path.join(outdir, fname + '.txt'), param_vals[p_ix])
+            		numpy.save(os.path.join(outdir, fname + '.npy'), param_vals[p_ix])
             
-            p_ix += 1
+            		p_ix += 1
+
+	else:
+        	for part in ['W','b']:
+            		assert names[p_ix] == part
+            		fname = layer_name + part
+            		print fname
+            		#numpy.savetxt(os.path.join(outdir, fname + '.txt'), param_vals[p_ix])
+            		numpy.save(os.path.join(outdir, fname + '.npy'), param_vals[p_ix])
+            
+            		p_ix += 1
             
     ### Input normalisation:-
     if cfg.process_labels_in_work_dir:

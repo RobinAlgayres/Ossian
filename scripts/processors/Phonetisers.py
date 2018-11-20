@@ -59,7 +59,7 @@ class NaivePhonetiser(SUtteranceProcessor):
 
             if current_class in self.word_classes:
                 word = node.attrib[self.target_attribute]
-                children = self.get_phonetic_segments(word)
+                children = self.get_custom_segments(word)
             elif current_class in self.probable_pause_classes:
                 children = [c.PROB_PAUSE]
             elif current_class in self.possible_pause_classes:
@@ -80,4 +80,14 @@ class NaivePhonetiser(SUtteranceProcessor):
     def do_training(self, speech_corpus, text_corpus):
         print "NaivePhonetiser requires no training"    
 
+    def get_custom_segments(self, word):
+	# pairs letters together 
+	# use this function if your original text is written in phones instead of letters
+        safetext_pairs = []
+	list_pairs=zip(*[list(word.lower())[i::2] for i in range(2)])
+	for x, y in list_pairs:
+		first_letter=naive_util.safetext(x).encode("utf-8")
+		second_letter=naive_util.safetext(y).encode("utf-8")
+                safetext_pairs.append(unicode(first_letter+second_letter))
+        return safetext_pairs
 

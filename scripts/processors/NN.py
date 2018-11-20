@@ -46,33 +46,36 @@ class NN(object):
     def __init__(self, model_dir):
         self.load_from_files(model_dir)
 
-        
-
     def load_from_files(self, model_dir):
         self.model_dir = model_dir
         files =  glob.glob(self.model_dir + '/*')
         #print 'files in ' + self.model_dir
         #print files
-        
         norm_count = 0
         
         self.layers = {}
         
-        #print files
+        print files
         
         for file in files:
-            junk,base = os.path.split(file)
+            _,base = os.path.split(file)
             base = base.replace('.npy','')
-            if base.startswith('LAYER'):  ## LAYER_001_TANH_b.npy
-            
-                junk,number,ltype,part = base.split('_')
-                number = int(number)
+            if base.startswith('LAYER'):  ## LAYER_001_LINEAR_TANH_b.npy
+           	print(base) 
+                meta_data=base.split('_')
+		_,number,ltype,part=meta_data[0:4]
+		if meta_data[2]=='LSTM':
+			part+=meta_data[4]	
+               	print(base,part)	
+		#_,number,ltype,part=base.split('_')
+		number = int(number)
                 weights = numpy.load(file)
                 if number not in self.layers:
                     self.layers[number] = {}
                 self.layers[number][part] = weights
                 self.layers[number]['activation'] = ltype
-        
+       		
+		 
             if base == 'NORM_OUTPUT_MEAN':
                 self.output_mean = numpy.load(file)
                 norm_count += 1
@@ -110,8 +113,46 @@ class NN(object):
         # or
         # newvalue= (max'-min')/(max-min)*(value-min)+min'.
         
-        
-        
+    def linear_layer(self,input,layer):
+	input = numpy.dot(input, layer['W'])
+        input += layer['b']
+        if layer['activation'] == 'TANH':
+                input = numpy.tanh(input)
+        elif layer['activation'] == 'LINEAR':
+                pass
+        else:
+                sys.exit('unknown activation: %s'%(layer['activation']))
+        return input
+
+    def sigmoid(self,x):
+        return 1 / (1 + np.exp(-x))
+
+    def tanh(self,x):
+        return np.tanh(x)
+
+    def single_frame_forward_pass(self,layer,x,h_prev,C_prev):
+	# from http://blog.varunajayasiri.com/numpy_lstm.html
+	i= self.sigmoid(np.dot(x,layer['Wxi'])+np.dot(h_prev,layer['Whi'])+layer['bi'])
+	f= self.sigmoid(np.dot(x,layer['Wxf'])+np.dot(h_prev,layer['Whf'])+layer['bf'])
+	C_bar= self.tanh(np.dot(x,layer['Wxc'])+np.dot(h_prev,layer['Whc'])+layer['bc'])
+	C= f * C_prev+i * C_bar
+	o= self.sigmoid(np.dot(x,layer['Wxo'])+np.dot(h_prev,layer['Who'])+layer['bi'])
+	h= o * self.tanh(C)
+
+	return h,C
+
+    def lstm_layer(self,input,layer):	
+	nframe,ndim=numpy.shape(input)
+	output=[]
+	h_prev=numpy.zeros((numpy.shape(layer['Who'])[0],))
+	C_prev=numpy.zeros((numpy.shape(layer['Whf'])[1],))
+	for i in range(nframe):
+		frame=input[i]
+		h_prev,C_prev=self.single_frame_forward_pass(layer,frame,h_prev,C_prev)	
+		output.append(h_prev)
+	print(numpy.shape(input),numpy.shape(output))
+	return output
+	
     def predict(self, input, input_normalisation=True, output_denormalisation=True):
         nframe, ndim = numpy.shape(input)
         assert ndim == self.indim, (ndim, self.indim)
@@ -129,18 +170,18 @@ class NN(object):
 #         sys.exit('vliadnviadnvdvn 3 stoped early')
 #         
 #                 
-#         
+
+	for i,layer in sorted(self.layers.items()):
+		for key in layer:
+   			print ( i ," key: %s , value: %s" % (key, numpy.shape(layer[key])))
         for (i, layer) in sorted(self.layers.items()):
             print i
-            input = numpy.dot(input, layer['W'])
-            input += layer['b']
-            if layer['activation'] == 'TANH':
-                input = numpy.tanh(input)
-            elif layer['activation'] == 'LINEAR':
-                pass
-            else:
-                sys.exit('unknown activation: %s'%(layer['activation']))
-                
+	    print(numpy.shape(input))
+            if layer['activation']=='LSTM':
+		input= self.lstm_layer(input,layer)
+	    else:
+            	input= self.linear_layer(input,layer)
+               
 #                 
 #         put_speech(input, '/afs/inf.ed.ac.uk/user/o/owatts/temp/cpu_gen/undenorm_66_015B.cmp')
 #         sys.exit('vliadnviadnvdvn stoped early 888')
@@ -151,8 +192,6 @@ class NN(object):
         else:    
             output = input        
         return output
-
-
 
 class NNAcousticModel(NN):
     ## add speech specific stuff, like splitting into streams and param gen
