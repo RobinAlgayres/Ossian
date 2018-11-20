@@ -1,0 +1,16 @@
+name: ossian
+channels:
+  - anaconda
+  - defaults
+dependencies:
+  - python=2.7
+  - numpy
+  - pip 
+  - scipy
+  - configobj
+  - scikit-learn
+  - regex
+  - lxml
+  - matplotlib=2.0.2
+  - theano
+  - pygpu
