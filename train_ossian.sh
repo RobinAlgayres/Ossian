@@ -21,13 +21,7 @@ SPEAKER="0107"
 MODE="$3" #if "nodur", do not predict duration and use user provided time_lab
 	  # if "novsm", do not add VSM to the linguistic features
 
-# modifying code source 
-#cp "$CORPUS_PATH/patch_ossian/Phonetisers.py" "scripts/processors/Phonetisers.py" #getting two letters at a time during parsing
-#cp "$CORPUS_PATH/patch_ossian/submit.sh" "scripts/util/submit.sh" # changing theano flags
 #cp "$CORPUS_PATH/patch_ossian/feed_forward_dnn_ossian_acoustic_model.conf" "scripts/merlin_interface/feed_forward_dnn_ossian_acoustic_model.conf" # custom config for acoustic model (LSTM, DNN,...)
-#cp "$CORPUS_PATH/patch_ossian/store_merlin_model.py" "scripts/util/store_merlin_model.py" # modif for storage of LSTM model
-#cp "$CORPUS_PATH/patch_ossian/NN.py" "scripts/processors/NN.py" # adding LSTM forward pass
-#cp "$CORPUS_PATH/patch_ossian/naive_novsm_01_nn.cfg" "recipes/naive_01_nn.cfg" 
 
 if [ "$MODE" = "nodur" ]; then	
 	cp "$CORPUS_PATH/patch_ossian/Tokenisers.py" "scripts/processors/Tokenisers.py"
@@ -47,7 +41,7 @@ if [ ! -d "tools/merlin" ]; then
 	./scripts/setup_tools.sh $HTK_USERNAME $HTK_PASSWORD
 fi
 
-cp "$CORPUS_PATH/patch/run_merlin.py" "tools/merlin/src/run_merlin.py" # best model is not saved if validation error increase before epoch 5
+cp "$CORPUS_PATH/patch_ossian/run_merlin.py" "tools/merlin/src/run_merlin.py" # best model is not saved if validation error increase before epoch 5
 
 # training Ossian front end (aligning data and getting lexicon)
 if [ ! -d "train" ]; then
