@@ -9,8 +9,8 @@ HTK_PASSWORD="qt9vAh8m"
 echo $OSSIAN
 
 #checking parameters
-if [ "$#" -ne 3 ]; then
-    echo "bash run.sh /mnt/zeroresources2019/ small_corpus_phones nodur"
+if [ "$#" -ne 4 ]; then
+    echo "bash run.sh /mnt/zeroresources2019/ small_corpus_phones nodur use_gpu"
     exit 1
 fi
 
@@ -51,9 +51,15 @@ fi
 
 export USER="challenger"
 export THEANO_FLAGS=""
+if [ $4 = 'use_gpu' ]; then
+	PYTHON_CMD="./scripts/util/submit.sh"
+else
+	PYTHON_CMD="python"
+fi
+
 if [ ! "$MODE" = "nodur" ]; then	
 	# training Merlin's duration model
-	python ./tools/merlin/src/run_merlin.py $OSSIAN/train/english/speakers/zs19_data/naive_01_nn/processors/duration_predictor/config.cfg || exit 1
+	$PYTHON_CMD ./tools/merlin/src/run_merlin.py $OSSIAN/train/english/speakers/zs19_data/naive_01_nn/processors/duration_predictor/config.cfg || exit 1
 
 	# converting Merlin's duration model to Ossian's format
 	python ./scripts/util/store_merlin_model.py $OSSIAN/train/english/speakers/zs19_data/naive_01_nn/processors/duration_predictor/config.cfg $OSSIAN/voices/english/zs19_data/naive_01_nn/processors/duration_predictor || exit 1
@@ -61,7 +67,7 @@ if [ ! "$MODE" = "nodur" ]; then
 fi
 
 # training Merlin's acoustic model
-python ./tools/merlin/src/run_merlin.py $OSSIAN/train/english/speakers/zs19_data/naive_01_nn/processors/acoustic_predictor/config.cfg || exit 1
+$PYTHON_CMD ./tools/merlin/src/run_merlin.py $OSSIAN/train/english/speakers/zs19_data/naive_01_nn/processors/acoustic_predictor/config.cfg || exit 1
 
 # converting Merlin's acoustic model to Ossian's format
 python ./scripts/util/store_merlin_model.py $OSSIAN/train/english/speakers/zs19_data/naive_01_nn/processors/acoustic_predictor/config.cfg $OSSIAN/voices/english/zs19_data/naive_01_nn/processors/acoustic_predictor || exit 1
