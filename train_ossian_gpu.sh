@@ -49,11 +49,9 @@ if [ ! -d "train" ]; then
 fi
 
 
-export USER="challenger"
-export THEANO_FLAGS=""
 if [ ! "$MODE" = "nodur" ]; then	
 	# training Merlin's duration model
-	python ./tools/merlin/src/run_merlin.py $OSSIAN/train/english/speakers/zs19_data/naive_01_nn/processors/duration_predictor/config.cfg || exit 1
+	./scripts/util/submit.sh ./tools/merlin/src/run_merlin.py $OSSIAN/train/english/speakers/zs19_data/naive_01_nn/processors/duration_predictor/config.cfg || exit 1
 
 	# converting Merlin's duration model to Ossian's format
 	python ./scripts/util/store_merlin_model.py $OSSIAN/train/english/speakers/zs19_data/naive_01_nn/processors/duration_predictor/config.cfg $OSSIAN/voices/english/zs19_data/naive_01_nn/processors/duration_predictor || exit 1
@@ -61,7 +59,7 @@ if [ ! "$MODE" = "nodur" ]; then
 fi
 
 # training Merlin's acoustic model
-python ./tools/merlin/src/run_merlin.py $OSSIAN/train/english/speakers/zs19_data/naive_01_nn/processors/acoustic_predictor/config.cfg || exit 1
+./scripts/util/submit.sh ./tools/merlin/src/run_merlin.py $OSSIAN/train/english/speakers/zs19_data/naive_01_nn/processors/acoustic_predictor/config.cfg || exit 1
 
 # converting Merlin's acoustic model to Ossian's format
 python ./scripts/util/store_merlin_model.py $OSSIAN/train/english/speakers/zs19_data/naive_01_nn/processors/acoustic_predictor/config.cfg $OSSIAN/voices/english/zs19_data/naive_01_nn/processors/acoustic_predictor || exit 1
