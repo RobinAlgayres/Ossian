@@ -48,12 +48,10 @@ if [ ! -d "train" ]; then
 	python ./scripts/train.py -s zs19_data -l english naive_01_nn || exit 1
 fi
 
-
-export USER="challenger"
-export THEANO_FLAGS=""
 if [ $4 = 'use_gpu' ]; then
 	PYTHON_CMD="./scripts/util/submit.sh"
 else
+	export THEANO_FLAGS=""
 	PYTHON_CMD="python"
 fi
 
