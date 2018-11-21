@@ -41,7 +41,7 @@ if [ ! -d "tools/merlin" ]; then
 	./scripts/setup_tools.sh $HTK_USERNAME $HTK_PASSWORD
 fi
 
-cp "$CORPUS_PATH/patch_ossian/run_merlin.py" "tools/merlin/src/run_merlin.py" # best model is not saved if validation error increase before epoch 5
+cp "./patch_ossian/run_merlin.py" "tools/merlin/src/run_merlin.py" # best model is not saved if validation error increase before epoch 5
 
 # training Ossian front end (aligning data and getting lexicon)
 if [ ! -d "train" ]; then
