@@ -24,11 +24,15 @@ MODE="$3" #if "nodur", do not predict duration and use user provided time_lab
 #cp "$CORPUS_PATH/patch_ossian/feed_forward_dnn_ossian_acoustic_model.conf" "scripts/merlin_interface/feed_forward_dnn_ossian_acoustic_model.conf" # custom config for acoustic model (LSTM, DNN,...)
 
 if [ "$MODE" = "nodur" ]; then	
-	cp "$CORPUS_PATH/patch_ossian/Tokenisers.py" "scripts/processors/Tokenisers.py"
-	cp "$CORPUS_PATH/patch_ossian/Aligner.py" "scripts/processors/Aligner.py"
-	cp "$CORPUS_PATH/patch_ossian/speak.py" "scripts/speak.py"
-	cp "$CORPUS_PATH/patch_ossian/Voice.py" "scripts/main/Voice.py" 
-	cp "$CORPUS_PATH/patch_ossian/naive_nodur_01_nn.cfg" "recipes/naive_01_nn.cfg" 
+	mkdir -p time_lab
+	mkdir -p test/time_lab
+	python ./patch_ossian/prep_time_lab.py ../ossian_training.txt time_lab
+	python ./patch_ossian/prep_time_lab.py ../ossian_inference.txt test/time_lab
+	cp "./patch_ossian/Tokenisers.py" "scripts/processors/Tokenisers.py"
+	cp "./patch_ossian/Aligner.py" "scripts/processors/Aligner.py"
+	cp "./patch_ossian/speak.py" "scripts/speak.py"
+	cp "./patch_ossian/Voice.py" "scripts/main/Voice.py" 
+	cp "./patch_ossian/naive_nodur_01_nn.cfg" "recipes/naive_01_nn.cfg" 
 fi
 
 if [ ! -d "corpus" ]; then

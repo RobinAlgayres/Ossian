@@ -289,7 +289,7 @@ class Voice(object):
         for processor in self.processors:
             print "\n==  proc no. %s (%s)  =="%(i, processor.processor_name)
 	    if i == 3 :
-		shutil.copyfile("test/time_lab_state/"+basename+".time_lab",time_lab_location+"/"+basename+".time_lab")
+		shutil.copyfile("test/time_lab/"+basename+".time_lab",time_lab_location+"/"+basename+".time_lab")
 		utt = self.prep_utt_from_time_lab(utt,basename)	
 		utt.pretty_print()
 	    processor.apply_to_utt(utt, voice_mode=self.run_mode)  ## utt is changed in place
