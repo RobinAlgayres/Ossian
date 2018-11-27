@@ -3,9 +3,12 @@
 
 Some modification were brought to the initial project:
 1) Getting two character at a time during parsing :
-"scripts/processors/Phonetisers.py" :
+"scripts/processors/Phonetisers.py"
+
 2) Updated Theano flags and removing bloking of gpu :
+
 "scripts/util/submit.sh" 
+
 3) LSTM config file :
 "scripts/merlin_interface/feed_forward_dnn_ossian_acoustic_model.conf" 
 4) LSTM were not implemented in original Ossian:
