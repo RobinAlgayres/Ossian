@@ -1,6 +1,6 @@
 #!bin/bash
 
-# exemple : bash train_ossian.sh /mnt/zeroresources2019/ small_corpus_phones dur
+# exemple : bash train_ossian.sh /mnt/zeroresources2019/ small_corpus_phones dur V001
 
 DIR="$(cd "$(dirname -- "$0")" && pwd)"
 OSSIAN=$DIR
@@ -9,15 +9,15 @@ HTK_PASSWORD="qt9vAh8m"
 echo $OSSIAN
 
 #checking parameters
-if [ "$#" -ne 4 ]; then
-    echo "bash run.sh /mnt/zeroresources2019/ small_corpus_phones nodur use_gpu"
+if [ "$#" -ne 5 ]; then
+    echo "bash train_ossian.sh /mnt/zeroresources2019/ small_corpus_phones nodur use_gpu V001"
     exit 1
 fi
 
 # getting corpus
 CORPUS_PATH="$1"
 CORPUS_NAME="$2"
-SPEAKER="0107"
+SPEAKER="$5"
 MODE="$3" #if "nodur", do not predict duration and use user provided time_lab
 	  # if "novsm", do not add VSM to the linguistic features
 
