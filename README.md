@@ -1,13 +1,13 @@
 
 # LSTM on Ossian from CSTR-Edinburgh
 
-Some modification were brought to the initial project:
+Some modifications were brought to the initial project:
 
-1) Getting two character at a time during parsing :
+1) Getting two characters at a time during parsing :
 
 "scripts/processors/Phonetisers.py"
 
-2) Updated Theano flags and removing bloking of gpu :
+2) Updated Theano flag and removing gpu bloking :
 
 "scripts/util/submit.sh" 
 
