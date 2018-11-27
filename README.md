@@ -1,5 +1,5 @@
 
-# This is a fork on Ossian from CSTR-Edinburgh
+# LSTM on Ossian from CSTR-Edinburgh
 
 Some modification were brought to the initial project:
 1) Getting two character at a time during parsing :
