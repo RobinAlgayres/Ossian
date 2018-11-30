@@ -33,8 +33,6 @@ if [ "$MODE" = "nodur" ]; then
 	cp "./patch_ossian/speak.py" "scripts/speak.py"
 	cp "./patch_ossian/Voice.py" "scripts/main/Voice.py" 
 	cp "./patch_ossian/naive_nodur_01_nn.cfg" "recipes/naive_01_nn.cfg" 
-elif [ "$MODE" = "nofeat" ]; then	
-	cp "./patch_ossian/naive_nofeat_01_nn.cfg" "recipes/naive_01_nn.cfg" 
 fi
 
 if [ ! -d "corpus" ]; then
